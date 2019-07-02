@@ -3,5 +3,9 @@ php:
   - '7.1.9'
 env:
   - SYMFONY_VERSION="4.3.*"
-on:
-  branch: master
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+script: phpunit
+matrix:
+  fast_finish: true
