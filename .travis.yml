@@ -2,6 +2,6 @@ language: php
 php:
   - '7.1.9'
 env:
-  - SYMFONY_VERSION="4.*"
+  - SYMFONY_VERSION="4.3.*"
 on:
   branch: master
