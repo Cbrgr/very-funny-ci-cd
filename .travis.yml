@@ -1,21 +1,49 @@
 language: php
-php:
-  - '7.1'
+sudo: false
+
+cache:
+  yarn: true
+  directories:
+    - $HOME/.composer/cache/files
+    - ./bin/.phpunit
+
 env:
-  - SYMFONY_VERSION="4.3.*"
-before_script:
-  - sudo apt-get update
-  # enable php-fpm
-  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-  - sudo a2enmod rewrite actions fastcgi alias
-  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
-  - sudo chown -R travis:travis /var/lib/apache2/fastcgi
-  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-  # configure apache virtual hosts
-  - sudo cp -f build/travis-ci-apache /etc/apache2/sites-available/000-default.conf
-  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
-  - sudo service apache2 restart
-script: phpunit
+  global:
+    - SYMFONY_PHPUNIT_DIR=./bin/.phpunit
+    - SYMFONY_DEPRECATIONS_HELPER=29
+
 matrix:
   fast_finish: true
+  include:
+    - php: 7.1.18
+    - php: 7.2
+    - php: 7.3
+    # 'php: nightly' is PHP 8.0
+    - php: 7.4snapshot
+  allow_failures:
+    - php: 7.4snapshot
+
+before_install:
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.4snapshot" ]] || phpenv config-rm xdebug.ini'
+  - composer self-update
+
+install:
+  - composer install
+  - ./bin/phpunit install
+
+script:
+  - ./bin/phpunit
+  # this checks that the source code follows the Symfony Code Syntax rules
+  - '[[ "$TRAVIS_PHP_VERSION" == "7.4snapshot" ]] || ./vendor/bin/php-cs-fixer fix --diff --dry-run -v'
+  # this checks that the YAML config files contain no syntax errors
+  - ./bin/console lint:yaml config
+  # this checks that the Twig template files contain no syntax errors
+  - ./bin/console lint:twig templates
+  # this checks that the XLIFF translations contain no syntax errors
+  - ./bin/console lint:xliff translations
+  # this checks that the application doesn't use dependencies with known security vulnerabilities
+  - ./bin/console security:check
+  # this checks that Doctrine's mapping configurations are valid
+  - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+  #  Fail CI if the repo is in a dirty state after building assets
+  - yarn install && yarn encore production && git add --all && git diff --staged --exit-code
