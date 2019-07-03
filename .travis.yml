@@ -1,5 +1,7 @@
 language: php
 php:
-  - '7.1'
+  - '7.1.*'
 env:
   - SYMFONY_VERSION="4.3.*"
+before_script:
+  - curl -sSfL -o ~/.phpenv/versions/hhvm/bin/phpunit https://phar.phpunit.de/phpunit-7.1.phar
