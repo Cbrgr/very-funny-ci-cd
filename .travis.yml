@@ -1,11 +1,19 @@
 language: node_js
 node_js:
-    - 'stable'
+  - 'stable'
 cache:
-    directories:
-        - node_modules
-script:
-    - npm test
-    - npm run build
+  directories:
+    - node_modules
+jobs:
+  include:
+    - stage: test
+      script: npm test
+    - stage: build
+      script: npm run build
+    - stage: deploy
+      deploy:
+        provider: heroku
+        api_key: $HEROKU_KEY
+        app: $HEROKU_APP
 on:
-    branch: master
+  branch: master
