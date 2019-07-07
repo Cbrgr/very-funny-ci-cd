@@ -8,6 +8,18 @@ php:
   - 7.1
   - 7.2
   - hhvm
+before_install:
+  - WP_CORE_DIR=/tmp/wordpress/
+  - >
+    if [[ "$WP_TRAVISCI" == "travis:phpunit" ]]; then
+        mysql -e "CREATE DATABASE wordpress_tests;" -uroot
+        cp wp-tests-config-sample.php wp-tests-config.php
+        sed -i "s/pdb/wordpress_tests/" wp-tests-config.php
+        sed -i "s/pdbuser/travis/" wp-tests-config.php
+        sed -i "s/04-3J31cd08k5B//" wp-tests-config.php
+        svn checkout https://plugins.svn.wordpress.org/wordpress-importer/trunk tests/phpunit/data/plugins/wordpress-importer
+    fi
+
 # Commands to be run before your environment runs.
 before_script:
   - composer self-update
