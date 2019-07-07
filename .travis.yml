@@ -1,35 +1,52 @@
-# Required to run your project under the correct environment.
 language: php
-# Versions of PHP you want your project run with.
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - libxml2-utils
+
 php:
-  - 5.5
-  - 5.6
   - 7.0
   - 7.1
   - 7.2
-  - hhvm
-before_install:
-  - WP_CORE_DIR=/tmp/wordpress/
-  - >
-    if [[ "$WP_TRAVISCI" == "travis:phpunit" ]]; then
-        mysql -e "CREATE DATABASE wordpress_tests;" -uroot
-        cp wp-tests-config-sample.php wp-tests-config.php
-        sed -i "s/pdb/wordpress_tests/" wp-tests-config.php
-        sed -i "s/pdbuser/travis/" wp-tests-config.php
-        sed -i "s/04-3J31cd08k5B//" wp-tests-config.php
-        svn checkout https://plugins.svn.wordpress.org/wordpress-importer/trunk tests/phpunit/data/plugins/wordpress-importer
-    fi
+  - master
 
-# Commands to be run before your environment runs.
-before_script:
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
-# Commands you want to run that will verify your build.
-script: phpunit
-# allow_failures: Allow this build to fail under the specified environments.
-# fast_finish: If your build fails do not continue trying to build, just stop.
 matrix:
   allow_failures:
-    - php: 5.6
-    - php: hhvm
+    - php: master
   fast_finish: true
+
+env:
+  matrix:
+    - DEPENDENCIES="high"
+    - DEPENDENCIES="low"
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+
+before_install:
+  - composer self-update
+  - composer clear-cache
+
+install:
+  - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi
+  - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
+
+before_script:
+  - echo 'zend.assertions=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - echo 'assert.exception=On' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+script:
+  - ./phpunit --coverage-clover=coverage.xml
+  - ./phpunit --configuration ./build/travis-ci-fail.xml > /dev/null; if [ $? -eq 0 ]; then echo "SHOULD FAIL"; false; else echo "fail checked"; fi;
+  - xmllint --noout --schema phpunit.xsd phpunit.xml
+  - xmllint --noout --schema phpunit.xsd tests/_files/configuration.xml
+  - xmllint --noout --schema phpunit.xsd tests/_files/configuration_empty.xml
+  - xmllint --noout --schema phpunit.xsd tests/_files/configuration_xinclude.xml -xinclude
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
