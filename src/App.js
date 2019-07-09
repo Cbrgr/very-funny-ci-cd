@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import Joke from '../src';
+import Joke from './Joke';
 import './App.css';
 
 class App extends Component {
@@ -18,7 +18,7 @@ class App extends Component {
 
 
   componentDidMount() {
-    // this.generateQuote();
+    this.generateQuote();
   }
 
   handleClick() {
@@ -53,13 +53,10 @@ class App extends Component {
         <div className="inner">
             <h1 className="title">Random Joke Machine</h1>
             <div className="joke">
-            <div className="joke__content">
-                <p className="joke__setup">{this.state.setup}</p>
-                <p className="joke__punchline">{this.state.punchline}</p>
-            </div>
-                {console.log(this.state.apiResult)}
-                {console.log(this.state.setup)}
-                {console.log(this.state.clickCount)}
+            <Joke
+                setup={this.state.setup}
+                punchline={this.state.punchline}
+            />
                 <button className="joke__new" onClick={this.handleClick}>New Joke</button>
             </div>
         </div>

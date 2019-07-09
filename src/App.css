@@ -1,15 +1,21 @@
-@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lobster|Roboto:400,700&display=swap');
 
 :root {
-    --main-bg-color: #f99192;
-    --main-txt-color: #f99192;
+    --main-bg-color: #3DC3FF;
+    --main-txt-color: #3DC3FF;
 }
+
+* {box-sizing: border-box;}
 
 .main {
     display: flex; flex-direction: column;
     height: 100vh; padding-bottom: 50px;
     background-color: var(--main-bg-color);
     text-align: center; font-family: 'Lora', serif; font-size: 18px; color: var(--main-txt-color);
+}
+
+.inner {
+    width: 100%; max-width: 1100px; padding: 0 40px; margin: 0 auto;
 }
 
 .title {
@@ -19,7 +25,7 @@
 
 .joke {
     display: flex; flex-direction: column; align-items: center;
-    margin: 0 auto; width: 80%; height: 70vh;
+    margin: 0 auto; width: 100%; height: 70vh;
     background-color: #fff;
 
 }
@@ -29,19 +35,21 @@
 }
 
 .joke__setup, .joke__punchline {
-    padding: 20px;
-    text-align: center; font-family: 'Arial', cursive;
+    padding: 20px; margin: 0;
+    text-align: center; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: bold;
 }
 
 .joke__new {
-    width: 80px;
-    padding: 5px;
+    width: 120px;
+    padding: 10px;
     border: none;
     border-radius: 5px;
     background-color: var(--main-bg-color);
+    border: 1px solid var(--main-bg-color);
     color: #fff;
     margin-bottom: 20px;
-    font-size: 12px;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 .joke__new:focus {
@@ -51,5 +59,4 @@
 .joke__new:hover {
     background-color: #fff;
     color: var(--main-txt-color);
-    border: 1px solid var(--main-txt-color);
 }
