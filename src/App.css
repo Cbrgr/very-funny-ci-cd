@@ -1,33 +1,55 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
+
+:root {
+    --main-bg-color: #f99192;
+    --main-txt-color: #f99192;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.main {
+    display: flex; flex-direction: column;
+    height: 100vh; padding-bottom: 50px;
+    background-color: var(--main-bg-color);
+    text-align: center; font-family: 'Lora', serif; font-size: 18px; color: var(--main-txt-color);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.title {
+    padding: 20px;
+    color: #fff; font-family: 'Lobster', cursive; font-weight: 400;
 }
 
-.App-link {
-  color: #61dafb;
+.joke {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 0 auto; width: 80%; height: 70vh;
+    background-color: #fff;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.joke__content {
+    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+
+.joke__setup, .joke__punchline {
+    padding: 20px;
+    text-align: center; font-family: 'Arial', cursive;
+}
+
+.joke__new {
+    width: 80px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--main-bg-color);
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+
+.joke__new:focus {
+    outline: none;
+}
+
+.joke__new:hover {
+    background-color: #fff;
+    color: var(--main-txt-color);
+    border: 1px solid var(--main-txt-color);
 }
