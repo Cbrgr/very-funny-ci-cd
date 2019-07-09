@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 class Joke extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
