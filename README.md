@@ -2,4 +2,4 @@
 
 Deployed with Travis & Heroku
 
-https://dashboard.heroku.com/apps/very-funny-ci-cd
+https://very-funny-ci-cd.herokuapp.com
